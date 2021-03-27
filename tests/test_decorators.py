@@ -1,4 +1,4 @@
-from noteworthy import botkit
+from nw import botkit
 
 class TestDecorators:
 
