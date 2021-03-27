@@ -5,6 +5,7 @@ import asyncio
 from .auth import BlockAll
 from .cache import NoCache
 from nio import (AsyncClient, ClientConfig, RoomMessageText, InviteMemberEvent)
+from nio.exceptions import OlmUnverifiedDeviceError
 
 class Bot():
 
@@ -13,7 +14,10 @@ class Bot():
         self.CHANNEL_GREETING = controller.CHANNEL_GREETING
         self.user = creds['user']
         self.password = creds['password']
-        self.client = AsyncClient(creds['homeserver'], creds['user'])
+        client_args = {}
+        if hasattr(controller, 'CLIENT_ARGS'):
+            client_args = controller.CLIENT_ARGS
+        self.client = AsyncClient(creds['homeserver'], creds['user'], **client_args)
         self.client.add_event_callback(self.invite_cb, InviteMemberEvent)
         self.client.add_event_callback(self.message_cb, RoomMessageText)
         self._setup_handlers(controller)
@@ -55,6 +59,7 @@ class Bot():
     async def message_cb(self, room, event):
         if not self.AUTH.authenticate_message(room, event):
             return
+        await self._trust_room(room)
         txt = event.body.strip()
         context = {'room': room, 'event': event, 'client': self.client}
         match = self.command_regex.match(txt)
@@ -66,6 +71,16 @@ class Bot():
             except:
                 return
 
+    async def _trust_room(self, room):
+        if self.client.room_contains_unverified(room_id = room.room_id):
+            for user_id in self.client.rooms[room.room_id].users:
+                print(f"Checking {user_id}")
+                if not self.client.olm.user_fully_verified(user_id):
+                    # device store and that requires syncing with the server.
+                    for device_id, olm_device in self.client.device_store[user_id].items():
+                        self.client.verify_device(olm_device)
+                        print(f"Trusting {device_id} from user {user_id}")
+            
     async def _handle_command(self, match, context):
         room = context.get('room')
         event = context.get('event')
@@ -88,6 +103,7 @@ class Bot():
             await self.client.room_send(
                 room_id=room.room_id, message_type='m.room.message',
                 content=content)
+                
 
     async def _execute_command(self, command, args, context):
         try:
