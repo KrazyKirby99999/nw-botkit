@@ -1,6 +1,6 @@
-# noteworthy-botkit
+# nw-botkit
 
-noteworthy-botkit is a library for quickly building Matrix bots. It uses [matrix-nio](https://github.com/poljar/matrix-nio) as its Matrix client library.
+nw-botkit is a library for quickly building Matrix bots. It uses [matrix-nio](https://github.com/poljar/matrix-nio) as its Matrix client library. This project is a fork of noteworthy-botkit that intends to continue improving.
 
 ## Examples
 
