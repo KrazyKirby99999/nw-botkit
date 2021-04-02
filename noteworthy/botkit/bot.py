@@ -17,7 +17,10 @@ class Bot():
         self.user = creds['user']
         self.password = creds['password']
         async_client_args = {}
-        async_client_args["store_path"] = controller.CLIENT_ARGS["store_path"]
+        allowed_AsyncClient_args = ["homeserver", "user", "device_id", "store_path", "config", "ssl", "proxy"]
+        for arg in controller.CLIENT_ARGS:
+            if arg in allowed_AsyncClient_args:
+                async_client_args[arg] = controller.CLIENT_ARGS[arg]
         self.client = AsyncClient(creds['homeserver'], creds['user'], **async_client_args)
         self.client.add_event_callback(self.invite_cb, InviteMemberEvent)
         self.client.add_event_callback(self.message_cb, RoomMessageText)
