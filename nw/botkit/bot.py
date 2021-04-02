@@ -11,13 +11,17 @@ class Bot():
 
     def __init__(self, controller, creds):
         self.name = controller.BOTKIT_BOT_NAME
-        self.CHANNEL_GREETING = controller.CHANNEL_GREETING
+        self.client_args = controller.CLIENT_ARGS
+        self.CHANNEL_GREETING = controller.CLIENT_ARGS["channel_greeting"]
+        self.prefix = controller.CLIENT_ARGS["bot_prefix"]
         self.user = creds['user']
         self.password = creds['password']
-        client_args = {}
-        if hasattr(controller, 'CLIENT_ARGS'):
-            client_args = controller.CLIENT_ARGS
-        self.client = AsyncClient(creds['homeserver'], creds['user'], **client_args)
+        async_client_args = {}
+        allowed_AsyncClient_args = ["homeserver", "user", "device_id", "store_path", "config", "ssl", "proxy"]
+        for arg in controller.CLIENT_ARGS:
+            if arg in allowed_AsyncClient_args:
+                async_client_args[arg] = controller.CLIENT_ARGS[arg]
+        self.client = AsyncClient(creds['homeserver'], creds['user'], **async_client_args)
         self.client.add_event_callback(self.invite_cb, InviteMemberEvent)
         self.client.add_event_callback(self.message_cb, RoomMessageText)
         self._setup_handlers(controller)
@@ -32,9 +36,6 @@ class Bot():
         
 
     def _setup_handlers(self, controller):
-        self.prefix = controller.BOTKIT_BOT_PREFIX
-        if not self.prefix:
-          self.prefix = "!" + self.name
         self.commands = {}
         self.msg_handler = None
         self.startup_method = None
