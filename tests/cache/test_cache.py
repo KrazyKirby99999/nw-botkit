@@ -1,4 +1,4 @@
-import noteworthy.botkit.cache as cache
+import nw.botkit.cache as cache
 
 class FakeEvent:
     def __init__(self, txt):

@@ -1,9 +1,9 @@
 import random
 import re
 
-import noteworthy.botkit as botkit
-import noteworthy.botkit.response as response
-import noteworthy.botkit.cache as cache
+import nw.botkit as botkit
+import nw.botkit.response as response
+import nw.botkit.cache as cache
 
 @botkit.botkit_controller(bot_name='echobot', bot_prefix='!bot')
 class EchoBotController():

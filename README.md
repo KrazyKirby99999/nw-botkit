@@ -1,6 +1,6 @@
-# noteworthy-botkit
+# nw-botkit
 
-noteworthy-botkit is a library for quickly building Matrix bots. It uses [matrix-nio](https://github.com/poljar/matrix-nio) as its Matrix client library.
+nw-botkit is a library for quickly building Matrix bots. It uses [matrix-nio](https://github.com/poljar/matrix-nio) as its Matrix client library. This project is a fork of noteworthy-botkit that intends to continue improving.
 
 ## Examples
 
@@ -12,9 +12,9 @@ import pathlib
 import requests
 from lxml import html
 
-import noteworthy.botkit as botkit
-import noteworthy.botkit.response as response
-import noteworthy.botkit.cache as cache
+import nw.botkit as botkit
+import nw.botkit.response as response
+import nw.botkit.cache as cache
 
 XKCD_PATH = pathlib.Path(__file__).parent.absolute()
 CACHE_PATH = os.path.join(XKCD_PATH, 'responsecache')
@@ -61,9 +61,9 @@ Images are cached in local folder.
 import random
 import re
 
-import noteworthy.botkit as botkit
-import noteworthy.botkit.response as response
-import noteworthy.botkit.cache as cache
+import nw.botkit as botkit
+import nw.botkit.response as response
+import nw.botkit.cache as cache
 
 client_args = {
     "bot_prefix":'!dice',

@@ -1,4 +1,4 @@
-from noteworthy.botkit.auth import PublicBot, BlockAll, UserWhitelist
+from nw.botkit.auth import PublicBot, BlockAll, UserWhitelist
 
 class FakeController:
     def __init__(self, whitelist):
